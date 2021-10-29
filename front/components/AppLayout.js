@@ -16,16 +16,16 @@ const AppLayout = ({children}) => {
     return (
         <div>
             <Menu mode="horizontal">
-                <Menu.Item>
+                <Menu.Item key="home">
                     <Link href="/"><a>SNS</a></Link>
                 </Menu.Item>
-                <Menu.Item>
+                <Menu.Item key="profile">
                     <Link href="/profile"><a>Profile</a></Link>
                 </Menu.Item>
-                <Menu.Item>
+                <Menu.Item key="searchInput">
                     <SearchInput enterButton />
                 </Menu.Item>
-                <Menu.Item>
+                <Menu.Item key="signup">
                     <Link href="/signup"><a>Sign up</a></Link>
                 </Menu.Item>
             </Menu>
