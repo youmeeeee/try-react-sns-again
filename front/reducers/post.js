@@ -3,30 +3,30 @@ const initialState = {
         id: 1,
         User: {
             id: 1,
-            nicknama: 'youme'
+            nickname: 'youme'
         },
         content: 'first post #hashtag #express',
         Images: [
             {
-            src: '',
+                src: 'https://dummyimage.com/500X500/000/fff',
             },
             {
-            src: '',
+                src: 'https://dummyimage.com/500X500/e6179a/ffffff',
             },
             {
-            src: '',
+                src: 'https://dummyimage.com/500X500/17abe6/ffffff',
             },
         ],
         Comments: [
             {
                 User: {
-                    nicknama: 'stranger1'
+                    nickname: 'stranger1'
                 },
                 content: 'Hello, stranger!'
             },
             { 
                 User: {
-                    nicknama: 'stranger2'
+                    nickname: 'stranger2'
                 },
                 content: 'Nice to see you!'
             },
