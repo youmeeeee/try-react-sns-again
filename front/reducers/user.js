@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 const initialState = {
     isLoggedIn: false,
     me: null,
@@ -6,17 +8,58 @@ const initialState = {
 }
 
 export const loginAction = (data) => {
+    return (dispatch, getState) => {
+        const state = getState() //initialState
+        dispatch(loginRequestAction());
+        axios.post('/api/login')
+            .thne((res) => {
+                dispatch(loginSuccessAction(res.data))
+            })
+            .catch((error) => {
+                dispatch(loginFailureAction(error))
+            })
+    }
+}
+
+export const loginRequestAction = (data) => {
     return {
-        type: 'LOGIN',
+        type: 'LOGIN_REQUEST',
         data
     }
 }
 
-export const logoutAction = () => {
+export const loginSuccessAction = (data) => {
     return {
-        type: 'LOGOUT'
+        type: 'LOGIN_SUCCESS',
+        data
     }
 }
+
+export const loginFailureAction = (data) => {
+    return {
+        type: 'LOGIN_FAILURE',
+        data
+    }
+}
+
+export const logoutRequestAction = () => {
+    return {
+        type: 'LOGOUT_REQUEST'
+    }
+}
+
+export const logoutSuccessAction = () => {
+    return {
+        type: 'LOGOUT_SUCCESS'
+    }
+}
+
+export const logoutFailureAction = () => {
+    return {
+        type: 'LOGOUT_FAILURE'
+    }
+}
+
 
 // (이전  상태, 액션) => 다음상태
 export const userReducer = (state = initialState, action) => {
