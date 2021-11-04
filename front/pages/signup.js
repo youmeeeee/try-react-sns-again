@@ -4,15 +4,21 @@ import AppLayout from '../components/AppLayout'
 import Head from 'next/head'
 import { Form, Input, Checkbox, Button } from 'antd'
 import styled from 'styled-components'
+import { SIGNUP_REQUEST } from '../reducers/user'
+import { useSelector, useDispatch } from 'react-redux'
+import { SIGNUP_REQUEST } from '../reducers/user'
 
 const ErrorMessage = styled.div`
   color: red;   
 `
 
 const Signup = () => {
+    const dispatch = useDispatch()
+    const { signupLoading } = useSelector((state) => state.user) 
+
     const buttonStyle = useMemo(() => ({marginTop: 10}), [])   
 
-    const [id, onChangeId] = useInput('');
+    const [email, onChangeEmail] = useInput('');
     const [nickname, onChangeNickname] = useInput('');
     const [password, onChangePassword] = useInput('');
     
@@ -45,7 +51,11 @@ const Signup = () => {
             if (!terms) {
                 return setTermsError(true)
             }
-            console.log(id, nickname, password, passwordCheck)
+            console.log(email, nickname, password, passwordCheck)
+            dispatch({
+                TYPE: SIGNUP_REQUEST,
+                data: { email, password, nickname }
+            })
         },
         [password, passwordCheck, terms],
     )
@@ -57,9 +67,9 @@ const Signup = () => {
             </Head>
             <Form onFinish={onSubmit}>
                 <div>
-                    <label htmlFor="user-id">Id</label>
+                    <label htmlFor="user-email">Email</label>
                     <br />
-                    <Input name="user-id" value={id} required onChange={onChangeId} />
+                    <Input name="user-email" type="email" value={email} required onChange={onChangeEmail} />
                 </div>
                 <div>
                     <label htmlFor="user-nickname">Nickname</label>
@@ -90,7 +100,7 @@ const Signup = () => {
                     {termsError && <ErrorMessage>You must agree to the terms and conditions.</ErrorMessage>}
                 </div>
                 <div style={buttonStyle}>
-                    <Button type="primary" htmlType="submit">Signup</Button>
+                    <Button type="primary" htmlType="submit" loading={signupLoading}>Signup</Button>
                 </div>
             </Form>
         </AppLayout>

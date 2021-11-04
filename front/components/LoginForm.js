@@ -3,8 +3,8 @@ import useInput from '../hooks/useInput'
 import { Form, Input, Button } from 'antd'
 import Link from 'next/link'
 import styled from 'styled-components'
-import { useDispatch } from 'react-redux'
-import { loginAction } from '../reducers/user'
+import { useSelector, useDispatch } from 'react-redux'
+import { loginRequestAction } from '../reducers/user'
 
 const ButtonWrapper = styled.div`
     margin-top: 10px;
@@ -16,26 +16,28 @@ const FormWrapper = styled(Form)`
 
 const LoginForm = () => {
     const dispatch = useDispatch();
-    const [id, onChangeId] = useInput('');
+    const [email, onChangeEmail] = useInput('');
     const [password, onChangePassword] = useInput('')
+    const {loginLoading} = useSelector(state => state.user)
 
     const onSubmitForm = useCallback(
         () => {
-            // console.log(id, password)
-            dispatch(loginAction({id, password}))
+            // console.log(email, password)
+            dispatch(loginRequestAction({email, password}))
         },
-        [id, password],
+        [email, password],
     )
 
     return (
         <FormWrapper onFinish={onSubmitForm}>
             <div>
-                <label htmlFor="user-id">ID</label>
+                <label htmlFor="user-email">Email</label>
                 <br />
                 <Input
-                    name="user-id" 
-                    value={id} 
-                    onChange={onChangeId} 
+                    name="user-email" 
+                    type="email"
+                    value={email} 
+                    onChange={onChangeEmail} 
                     required 
                 />
             </div>
@@ -51,7 +53,7 @@ const LoginForm = () => {
                 />
             </div>
             <ButtonWrapper> 
-                <Button type="primary" htmlType="submit" loading={false}>LOGIN</Button>
+                <Button type="primary" htmlType="submit" loading={loginLoading}>LOGIN</Button>
                 <Link href="/signup"><a><Button>SIGNUP</Button></a></Link>
             </ButtonWrapper>
         </FormWrapper>

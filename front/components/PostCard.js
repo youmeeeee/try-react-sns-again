@@ -56,7 +56,7 @@ const PostCard = ({ post }) => {
             >
                 {/* <Image /> */}
                 <Card.Meta
-                    avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
+                    avatar={<Avatar>{post.User.nickname[0].toUpperCase()}</Avatar>}
                     title={post.User.nickname}
                     description={<PostCardContent postData={post.content} />}
                 />
@@ -74,7 +74,7 @@ const PostCard = ({ post }) => {
                                 <li>
                                     <Comment 
                                         author={item.User.nickname}
-                                        avatar={<Avatar>{item.User.nickname[0]}</Avatar>}
+                                        avatar={<Avatar>{item.User.nickname[0].toUpperCase()}</Avatar>}
                                         content={item.content}
                                     />
                                 </li>

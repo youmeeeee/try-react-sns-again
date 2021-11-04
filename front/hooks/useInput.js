@@ -8,5 +8,5 @@ export default (initialValue = null) => {
         },
         [],
     )
-    return [value, handler]
+    return [value, handler, setValue]
 }
