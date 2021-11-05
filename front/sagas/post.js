@@ -55,7 +55,7 @@ function* watchAddComment() {
     yield takeLatest(ADD_COMMENT_REQUEST, addComment)
 }
 
-export default function* rootSaga () {
+export default function* postSaga() {
     yield all([
         fork(watchAddPost),
         fork(watchAddComment),
