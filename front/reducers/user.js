@@ -60,7 +60,7 @@ const dummyUser = (data) => ({
     id: 1,
     Posts: [],
     Followings: [],
-    Follwers: []
+    Followers: []
 })
 
 // (이전  상태, 액션) => 다음상태

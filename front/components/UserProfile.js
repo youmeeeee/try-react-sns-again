@@ -18,7 +18,7 @@ export const UserProfile = () => {
        <Card
             actions={[
                 <div key="twit">Twit<br/>{me.Posts.length}</div>,
-                <div key="following">Followings<br/>{me.Following.length}</div>,
+                <div key="following">Followings<br/>{me.Followings.length}</div>,
                 <div key="followers">Follwers<br/>{me.Followers.length}</div>
             ]}
         >
