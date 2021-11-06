@@ -2,7 +2,7 @@ import shortId from 'shortid'
 
 const initialState = {
   mainPosts: [{
-    id: 1,
+    id: '1',
     User: {
       id: 1,
       nickname: 'youme',
