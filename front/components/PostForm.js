@@ -8,7 +8,7 @@ const PostForm = () => {
   const [text, onChangeText, setText] = useInput('')
   const imageInput = useRef()
 
-  const { imagesPaths, addPostDone } = useSelector((state) => state.post)
+  const { imagesPaths, addPostLoading, addPostDone } = useSelector((state) => state.post)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -40,7 +40,7 @@ const PostForm = () => {
       <div>
         <input type="file" multiple hidden ref={imageInput} />
         <Button onClick={onClickImageUpload}>Image Upload</Button>
-        <Button type="primary" style={{ float: 'right' }} htmlType="submit">Twit</Button>
+        <Button type="primary" style={{ float: 'right' }} htmlType="submit" loading={addPostLoading}>Twit</Button>
       </div>
       <div>
         {imagesPaths.map((v) => (
