@@ -72,6 +72,15 @@ const dummyPost = (data) => ({
   Comments: [],
 })
 
+const dummyComment = (data) => ({
+  id: shortId.generate(),
+  content: data,
+  User: {
+    id: 1,
+    nickname: 'youme',
+  },
+})
+
 // (이전  상태, 액션) => 다음상태
 const postReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -102,12 +111,19 @@ const postReducer = (state = initialState, action) => {
       addCommentDone: false,
       addCommentError: null,
     }
-  case ADD_COMMENT_SUCCESS:
+  case ADD_COMMENT_SUCCESS: {
+    const postIndex = state.mainPosts.findIndex((v) => v.id === action.data.postId)
+    const post = { ...state.mainPosts[postIndex] }
+    post.Comments = [dummyComment(action.data.content), ...post.Comments]
+    const mainPosts = [...state.mainPosts]
+    mainPosts[postIndex] = post
     return {
       ...state,
+      mainPosts,
       addCommentLoading: false,
       addCommentDone: true,
     }
+  }
   case ADD_COMMENT_FAILURE:
     return {
       ...state,
