@@ -1,5 +1,7 @@
 // import axios from 'axios'
 
+import { ExclamationOutlined } from '@ant-design/icons'
+
 const initialState = {
   loginLoading: false,
   loginDone: false,
@@ -48,6 +50,9 @@ export const UNFOLLOW_REQUEST = 'UNFOLLOW_REQUEST'
 export const UNFOLLOW_SUCCESS = 'UNFOLLOW_SUCCESS'
 export const UNFOLLOW_FAILURE = 'UNFOLLOW_REQUEST'
 
+export const ADD_POST_TO_ME = 'ADD_POST_TO_ME'
+export const REMOVE_POST_OF_ME = 'REMOVE_POST_OF_ME'
+
 export const loginRequestAction = (data) => ({
   type: LOGIN_REQUEST,
   data,
@@ -61,9 +66,21 @@ const dummyUser = (data) => ({
   ...data,
   nickname: 'youme',
   id: 1,
-  Posts: [],
-  Followings: [],
-  Followers: [],
+  Posts: [
+    { id: 1 },
+  ],
+  Followings: [
+    { nickname: 'following1' },
+    { nickname: 'following2' },
+    { nickname: 'following3' },
+  ],
+  Followers: [
+    { nickname: 'follower1' },
+    { nickname: 'follower2' },
+    { nickname: 'follower3' },
+    { nickname: 'follower4' },
+    { nickname: 'follower5' },
+  ],
 })
 
 // (이전  상태, 액션) => 다음상태
@@ -146,6 +163,22 @@ export const userReducer = (state = initialState, action) => {
       ...state,
       changeNicknameLoading: false,
       signupError: action.error,
+    }
+  case ADD_POST_TO_ME:
+    return {
+      ...state,
+      me: {
+        ...state.me,
+        Posts: [{ id: action.data }, ...state.me.Posts],
+      },
+    }
+  case REMOVE_POST_OF_ME:
+    return {
+      ...state,
+      me: {
+        ...state.me,
+        Posts: state.me.Posts.filter((v) => v.id !== action.data),
+      },
     }
   default:
     return state
