@@ -1,6 +1,5 @@
 // import axios from 'axios'
-
-import { ExclamationOutlined } from '@ant-design/icons'
+import produce from 'immer'
 
 const initialState = {
   loginLoading: false,
@@ -84,105 +83,71 @@ const dummyUser = (data) => ({
 })
 
 // (이전  상태, 액션) => 다음상태
-export const userReducer = (state = initialState, action) => {
+export const userReducer = (state = initialState, action) => produce(state, (draft) => {
   switch (action.type) {
   case LOGIN_REQUEST:
-    return {
-      ...state,
-      loginLoading: true,
-      loginDone: false,
-      loginError: null,
-    }
+    draft.loginLoading = true
+    draft.loginDone = false
+    draft.loginError = null
+    break
   case LOGIN_SUCCESS:
-    return {
-      ...state,
-      loginLoading: false,
-      loginDone: true,
-      me: dummyUser(action.data),
-    }
+    draft.loginLoading = false
+    draft.loginDone = true
+    draft.me = dummyUser(action.data)
+    break
   case LOGIN_FAILURE:
-    return {
-      ...state,
-      loginLoading: false,
-      loginError: action.error,
-    }
+    draft.loginLoading = false
+    draft.loginError = action.error
+    break
   case LOGOUT_REQUEST:
-    return {
-      ...state,
-      logoutLoading: true,
-      logoutDone: false,
-      logoutError: null,
-    }
+    draft.logoutLoading = true
+    draft.logoutDone = false
+    draft.logoutError = null
+    break
   case LOGOUT_SUCCESS:
-    return {
-      ...state,
-      logoutLoading: false,
-      logoutDone: true,
-      me: null,
-    }
+    draft.logoutLoading = false
+    draft.logoutDone = true
+    draft.me = null
+    break
   case LOGOUT_FAILURE:
-    return {
-      ...state,
-      logoutLoading: false,
-      lgoutError: action.error,
-    }
+    draft.logoutLoading = false
+    draft.logoutError = action.error
+    break
   case SIGNUP_REQUEST:
-    return {
-      ...state,
-      signupLoading: true,
-      signupDone: false,
-      signupError: null,
-    }
+    draft.signupLoading = true
+    draft.signupDone = false
+    draft.signupError = null
+    break
   case SIGNUP_SUCCESS:
-    return {
-      ...state,
-      signupLoading: false,
-      signupDone: true,
-    }
+    draft.signupLoading = false
+    draft.signupDone = true
+    break
   case SIGNUP_FAILURE:
-    return {
-      ...state,
-      signupLoading: false,
-      signupError: action.error,
-    }
+    draft.signupLoading = false
+    draft.signupError = action.error
+    break
   case CHANGE_NICKNAME_REQUEST:
-    return {
-      ...state,
-      changeNicknameLoading: true,
-      changeNicknameDone: false,
-      changeNicknameError: null,
-    }
+    draft.changeNicknameLoading = true
+    draft.changeNicknameDone = false
+    draft.changeNicknameError = null
+    break
   case CHANGE_NICKNAME_SUCCESS:
-    return {
-      ...state,
-      changeNicknameLoading: false,
-      changeNicknameDone: true,
-    }
+    draft.changeNicknameLoading = false
+    draft.changeNicknameDone = true
+    break
   case CHANGE_NICKNAME_FAILURE:
-    return {
-      ...state,
-      changeNicknameLoading: false,
-      signupError: action.error,
-    }
+    draft.changeNicknameLoading = false
+    draft.changeNicknameError = action.error
+    break
   case ADD_POST_TO_ME:
-    return {
-      ...state,
-      me: {
-        ...state.me,
-        Posts: [{ id: action.data }, ...state.me.Posts],
-      },
-    }
+    draft.me.Posts.unshift({ id: action.data })
+    break
   case REMOVE_POST_OF_ME:
-    return {
-      ...state,
-      me: {
-        ...state.me,
-        Posts: state.me.Posts.filter((v) => v.id !== action.data),
-      },
-    }
+    draft.me.Posts = draft.me.Posts.filter((v) => v.id !== action.data)
+    break
   default:
-    return state
+    break
   }
-}
+})
 
 export default userReducer
