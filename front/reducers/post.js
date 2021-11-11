@@ -3,47 +3,12 @@ import faker from 'faker'
 import produce from 'immer'
 
 const initialState = {
-  mainPosts: [{
-    id: '1',
-    User: {
-      id: 1,
-      nickname: 'youme',
-    },
-    content: 'first post #hashtag #express',
-    Images: [
-      {
-        id: shortId.generate(),
-        src: 'https://dummyimage.com/500X500/000/fff',
-      },
-      {
-        id: shortId.generate(),
-        src: 'https://dummyimage.com/500X500/e6179a/ffffff',
-      },
-      {
-        id: shortId.generate(),
-        src: 'https://dummyimage.com/500X500/17abe6/ffffff',
-      },
-    ],
-    Comments: [
-      {
-        id: shortId.generate(),
-        User: {
-          id: shortId.generate(),
-          nickname: 'stranger1',
-        },
-        content: 'Hello, stranger!',
-      },
-      {
-        id: shortId.generate(),
-        User: {
-          id: shortId.generate(),
-          nickname: 'stranger2',
-        },
-        content: 'Nice to see you!',
-      },
-    ],
-  }],
+  mainPosts: [],
   imagesPaths: [],
+  hasMorePost: true,
+  loadPostsLoading: false,
+  loadPostsDone: false,
+  loadPostsError: false,
   addPostLoading: false,
   addPostDone: false,
   addPostError: false,
@@ -55,26 +20,28 @@ const initialState = {
   addCommentError: false,
 }
 
-initialState.mainPosts = initialState.mainPosts.concat(
-  Array(20).fill().map(() => ({
+export const generateDummyPost = (number) => Array(number).fill().map(() => ({
+  id: shortId.generate(),
+  User: {
     id: shortId.generate(),
+    nickname: faker.name.findName(),
+  },
+  content: faker.lorem.paragraph(),
+  Comments: [{
     User: {
       id: shortId.generate(),
       nickname: faker.name.findName(),
     },
-    content: faker.lorem.paragraph(),
-    Comments: [{
-      User: {
-        id: shortId.generate(),
-        nickname: faker.name.findName(),
-      },
-      content: faker.lorem.sentence(),
-    }],
-    Images: [{
-      src: faker.image.image(),
-    }],
-  })),
-)
+    content: faker.lorem.sentence(),
+  }],
+  Images: [{
+    src: faker.image.image(),
+  }],
+}))
+
+export const LOAD_POSTS_REQUEST = 'LOAD_POSTS_REQUEST'
+export const LOAD_POSTS_SUCCESS = 'LOAD_POSTS_SUCCESS'
+export const LOAD_POSTS_FAILURE = 'LOAD_POSTS_FAILURE'
 
 export const ADD_POST_REQUEST = 'ADD_POST_REQUEST'
 export const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS'
@@ -126,10 +93,25 @@ const dummyComment = (data) => ({
 // 이전  상태를 액션을 통해 다음상태로 만들어 내는 함수 (불변성을 지키면서)
 const postReducer = (state = initialState, action) => produce(state, (draft) => {
   switch (action.type) {
+  case LOAD_POSTS_REQUEST:
+    draft.loadPostsLoading = true
+    draft.loadPostsDone = false
+    draft.loadPostsError = null
+    break
+  case LOAD_POSTS_SUCCESS:
+    draft.loadPostsLoading = false
+    draft.loadPostsDone = true
+    draft.mainPosts = draft.mainPosts.concat(action.data)
+    draft.hasMorePost = draft.mainPosts.length < 50
+    break
+  case LOAD_POSTS_FAILURE:
+    draft.loadPostsLoading = false
+    draft.loadPostsError = action.error
+    break
   case ADD_POST_REQUEST:
-    draft.addPostLoading = true
-    draft.addPostDone = false
-    draft.addPostError = null
+    draft.loadPostsLoading = true
+    draft.loadPostsDone = false
+    draft.loadPostsError = null
     break
   case ADD_POST_SUCCESS:
     draft.addPostLoading = false
