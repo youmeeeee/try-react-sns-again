@@ -4,3 +4,4 @@ front/package-lock.json
 
 back/node_modules
 back/package-lock.json
+back/config/config.json
