@@ -1,8 +1,9 @@
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useMemo, useEffect } from 'react'
 import Head from 'next/head'
 import { Form, Input, Checkbox, Button } from 'antd'
 import styled from 'styled-components'
 import { useSelector, useDispatch } from 'react-redux'
+import Router from 'next/router'
 import { SIGNUP_REQUEST } from '../reducers/user'
 import AppLayout from '../components/AppLayout'
 import useInput from '../hooks/useInput'
@@ -13,7 +14,19 @@ const ErrorMessage = styled.div`
 
 const Signup = () => {
   const dispatch = useDispatch()
-  const { signupLoading } = useSelector((state) => state.user)
+  const { signupLoading, signupDone, signupError } = useSelector((state) => state.user)
+
+  useEffect(() => {
+    if (signupDone) {
+      Router.push('/')
+    }
+  }, [signupDone])
+
+  useEffect(() => {
+    if (signupError) {
+      alert(signupError)
+    }
+  }, [signupError])
 
   const buttonStyle = useMemo(() => ({ marginTop: 10 }), [])
 
@@ -52,7 +65,7 @@ const Signup = () => {
       }
       console.log(email, nickname, password, passwordCheck)
       return dispatch({
-        TYPE: SIGNUP_REQUEST,
+        type: SIGNUP_REQUEST,
         data: { email, password, nickname },
       })
     },

@@ -7,9 +7,9 @@ import reducer from '../reducers'
 import rootSaga from '../sagas'
 
 const loggerMiddleware = ({ dispatch, getState }) => (next) => (action) => {
-  console.log(dispatch)
-  console.log(getState)
-  console.log(action)
+  console.log('dispatch', dispatch)
+  console.log('getState', getState)
+  console.log('action', action)
   return next(action)
 }
 
