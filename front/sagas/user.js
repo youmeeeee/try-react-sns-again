@@ -8,20 +8,18 @@ import {
   UNFOLLOW_REQUEST, UNFOLLOW_SUCCESS, UNFOLLOW_FAILURE,
 } from '../reducers/user'
 
-// function loginAPI(data) {
-//     return axios.post('api/login', data)
-// }
+function loginAPI(data) {
+  return axios.post('/user/login', data)
+}
 
 function* login(action) {
   try {
-    // const result = yield call(loginAPI, action.dataI)
-    yield delay(1000)
-
+    const result = yield call(loginAPI, action.data)
+    console.log(`login result: ${result}`)
     // put은 dispatch라고 생각하자!
     yield put({
       type: LOGIN_SUCCESS,
-      data: { ...action.data, nickname: 'youme' },
-      // data: result.data
+      data: result.data,
     })
   } catch (error) {
     yield put({
@@ -62,7 +60,7 @@ function* watchLogout() {
 }
 
 function signupAPI(data) {
-  return axios.post('http://localhost:3065/user', data)
+  return axios.post('/user', data)
 }
 
 function* signup(action) {

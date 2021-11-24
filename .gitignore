@@ -2,6 +2,7 @@ front/.next
 front/node_modules
 front/package-lock.json
 
+back/.env
 back/node_modules
 back/package-lock.json
 back/config/config.json

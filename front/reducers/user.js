@@ -93,7 +93,7 @@ export const userReducer = (state = initialState, action) => produce(state, (dra
   case LOGIN_SUCCESS:
     draft.loginLoading = false
     draft.loginDone = true
-    draft.me = dummyUser(action.data)
+    draft.me = action.data
     break
   case LOGIN_FAILURE:
     draft.loginLoading = false

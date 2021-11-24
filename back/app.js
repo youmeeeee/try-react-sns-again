@@ -1,9 +1,21 @@
 const express = require('express')
 const cors = require('cors')
+const dotenv = require('dotenv')
+const db = require('./models')
+
+const passportConfig = require('./passport')
+const passport = require('passport')
+const session = require('express-session')
+const cookieParser = require('cookie-parser')
+
 const userRouter = require('./routes/user')
 const postRouter = require('./routes/post')
-const db = require('./models')
+
 const app = express()
+
+passportConfig()
+dotenv.config()
+
 db.sequelize.sync()
     .then(() => {
         console.log('db connect success!')
@@ -20,6 +32,16 @@ app.use(cors({
 // ***위치 주의*** front에서 보낸 data를 req.body에 넣어주는 역할
 app.use(express.json()) // json 형식의 데이터를 req.body에 넣어줌
 app.use(express.urlencoded({ extended: true})) // form submit을 했을 때  URLencoded 방식으로 req.body에 넣어줌
+
+// login 위한 미들웨어  
+app.use(cookieParser(process.env.COOKIE_SECRET))
+app.use(session({
+    saveUninitialized: false,
+    resave: false,
+    secret: process.env.COOKIE_SECRET,
+}))
+app.use(passport.initialize())
+app.use(passport.session())
 
 app.get('/', (req, res) => {
     res.send('hello exporess');

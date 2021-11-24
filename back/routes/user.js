@@ -1,8 +1,28 @@
 const express = require('express')
 const bcrypt = require('bcrypt')
+const passport = require('passport')
 const router = express.Router()
 const { User } = require('../models')
-const { noExtendLeft } = require('sequelize/dist/lib/operators')
+
+// middleware 확장하는 법 참고
+router.post('/login', (req, res, next) => {
+    passport.authenticate('local', (error, user, info) => {
+        if (error) {
+            console.error(error)
+            return next(error)
+        }
+        if (info) {
+            return res.status(401).send(info.reason) 
+        }
+        return req.login(user, async (loginError) => {
+            if (loginError) {
+                console.error(loginError)
+                return next(loginError)
+            }
+            return res.status(200).json(user)
+        })
+    })(req, res, next)
+})
 
 router.post('/', async (req, res, next) => { // Post /user
     try {
@@ -26,6 +46,12 @@ router.post('/', async (req, res, next) => { // Post /user
         console.error(error)
         next(error) // status 500
     }
+})
+
+router.post('/user/logout', (req, res, next) => {
+    req.logout()
+    req.session.destroy()
+    res.send('logout ok!')
 })
 
 module.exports = router
