@@ -34,18 +34,17 @@ function* watchLogin() {
   yield takeLatest(LOGIN_REQUEST, login)
 }
 
-// function logoutAPI() {
-//     return axios.post('api/logout')
-// }
+function logoutAPI() {
+  return axios.post('/user/logout')
+}
 
 function* logout() {
   try {
-    // const result = yield call(logoutAPI)
-    yield delay(1000)
+    const result = yield call(logoutAPI)
 
     yield put({
       type: LOGOUT_SUCCESS,
-      // data: result.data
+      data: result.data,
     })
   } catch (error) {
     yield put({

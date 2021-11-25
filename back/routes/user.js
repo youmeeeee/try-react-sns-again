@@ -2,7 +2,7 @@ const express = require('express')
 const bcrypt = require('bcrypt')
 const passport = require('passport')
 const router = express.Router()
-const { User } = require('../models')
+const { User, Post } = require('../models')
 
 // middleware 확장하는 법 참고
 router.post('/login', (req, res, next) => {
@@ -19,7 +19,24 @@ router.post('/login', (req, res, next) => {
                 console.error(loginError)
                 return next(loginError)
             }
-            return res.status(200).json(user)
+            const fullUserWithoutPassword = await User.findOne({
+                where: {
+                    id: user.id
+                },
+                attributes: {
+                    exclude: ['password']
+                  },
+                include: [{
+                    model: Post
+                }, {
+                    model: User,
+                    as: 'Followings'
+                }, {
+                    model: User,
+                    as: 'Followers'
+                }]
+            })
+            return res.status(200).json(fullUserWithoutPassword)
         })
     })(req, res, next)
 })
@@ -48,7 +65,7 @@ router.post('/', async (req, res, next) => { // Post /user
     }
 })
 
-router.post('/user/logout', (req, res, next) => {
+router.post('/logout', (req, res, next) => {
     req.logout()
     req.session.destroy()
     res.send('logout ok!')
