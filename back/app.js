@@ -25,8 +25,8 @@ db.sequelize.sync()
     })
 
 app.use(cors({
-    origin: '*',
-    // credentials: false,
+    origin: true,
+    credentials: true,
 }))
 
 // ***위치 주의*** front에서 보낸 data를 req.body에 넣어주는 역할

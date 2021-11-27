@@ -1,8 +1,9 @@
 const express = require('express')
 const router = express.Router()
 
-router.post('/', (req, res) => {
-    res.json('add complete')
+const { isLoggedIn, isLoggedNotIn } = require('./middlewares')
+
+router.post('/', isLoggedIn, async (req, res, next) => {
 })
 
 router.delete('/', (req, res) => {

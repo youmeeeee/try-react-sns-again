@@ -3,9 +3,10 @@ const bcrypt = require('bcrypt')
 const passport = require('passport')
 const router = express.Router()
 const { User, Post } = require('../models')
+const { isLoggedIn, isNotLoggedIn } = require('./middlewares')
 
 // middleware 확장하는 법 참고
-router.post('/login', (req, res, next) => {
+router.post('/login', isNotLoggedIn, (req, res, next) => {
     passport.authenticate('local', (error, user, info) => {
         if (error) {
             console.error(error)
@@ -41,7 +42,7 @@ router.post('/login', (req, res, next) => {
     })(req, res, next)
 })
 
-router.post('/', async (req, res, next) => { // Post /user
+router.post('/', isNotLoggedIn, async (req, res, next) => { // Post /user
     try {
         const exUser = await User.findOne({
             where: {
@@ -65,7 +66,7 @@ router.post('/', async (req, res, next) => { // Post /user
     }
 })
 
-router.post('/logout', (req, res, next) => {
+router.post('/logout', isLoggedIn, (req, res, next) => {
     req.logout()
     req.session.destroy()
     res.send('logout ok!')
