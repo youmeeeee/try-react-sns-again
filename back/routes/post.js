@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 const { Post, Image, Comment, User } = require('../models')
+const comment = require('../models/comment')
 const { isLoggedIn } = require('./middlewares')
 
 router.post('/', isLoggedIn, async (req, res, next) => {
@@ -18,8 +19,13 @@ router.post('/', isLoggedIn, async (req, res, next) => {
                 model: Image,
             }, {
                 model: Comment,
+                include: [{
+                    model: User,
+                    attributes: ['id', 'nickname']
+                }]
             }, {
-                model: User
+                model: User,
+                attributes: ['id', 'nickname']
             }]
         })
         res.status(201).json(fullPost)
@@ -39,12 +45,21 @@ router.post('/:postId/comment', isLoggedIn, async (req, res, next) => {
         if (!post) {
             return res.status(403).send('This post does not exist.')
         }
-        const commnet = await Comment.create({
+        const comment = await Comment.create({
             content: req.body.content,
-            PostId: req.params.postId,
+            PostId: parseInt(req.params.postId, 10),
             UserId: req.user.id,
         })
-        res.status(201).json(commnet)
+        const fullComment = await Comment.findOne({
+            where: {
+                id: comment.id
+            },
+            include: [{
+                model: User,
+                attributes: ['id', 'nickname']
+            }]
+        })
+        res.status(201).json(fullComment)
     } catch (error) {
         console.log(error)
         next(error)

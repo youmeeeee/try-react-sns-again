@@ -1,8 +1,8 @@
 const express = require('express')
 const cors = require('cors')
 const dotenv = require('dotenv')
+const morgan = require('morgan')
 const db = require('./models')
-
 const passportConfig = require('./passport')
 const passport = require('passport')
 const session = require('express-session')
@@ -10,6 +10,7 @@ const cookieParser = require('cookie-parser')
 
 const userRouter = require('./routes/user')
 const postRouter = require('./routes/post')
+const postsRouter = require('./routes/posts')
 
 const app = express()
 
@@ -24,6 +25,7 @@ db.sequelize.sync()
         console.error('db connect error!', error)
     })
 
+app.use(morgan('dev'))
 app.use(cors({
     origin: true,
     credentials: true,
@@ -50,16 +52,9 @@ app.get('/api', (req, res) => {
     res.send('hello api');
 })
 
-app.get('/posts', (req, res) => {
-    res.json([
-         {id: 1, content: 'hello 1' },
-         {id: 2, content: 'hello 2' },
-         {id: 3, content: 'hello 3' },
-    ])
-})
-
 app.use('/user', userRouter)
 app.use('/post', postRouter)
+app.use('/posts', postsRouter)
 
 app.listen(3065, () => {
     console.log('3065 server working')
