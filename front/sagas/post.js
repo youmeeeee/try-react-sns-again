@@ -5,21 +5,21 @@ import {
   ADD_POST_REQUEST, ADD_POST_SUCCESS, ADD_POST_FAILURE,
   REMOVE_POST_REQUEST, REMOVE_POST_SUCCESS, REMOVE_POST_FAILURE,
   ADD_COMMENT_REQUEST, ADD_COMMENT_SUCCESS, ADD_COMMENT_FAILURE,
-  generateDummyPost,
+  LIKE_POST_REQUEST, LIKE_POST_SUCCESS, LIKE_POST_FAILURE,
+  UNLIKE_POST_REQUEST, UNLIKE_POST_SUCCESS, UNLIKE_POST_FAILURE,
 } from '../reducers/post'
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user'
 
-// function loadPostsAPI(data) {
-//     return axios.get('api/posts')
-// }
+function loadPostsAPI(data) {
+  return axios.get('/posts', data)
+}
 
 function* loadPosts(action) {
   try {
-    console.log(action)
-    // const result = yield call(addPostAPI, action.data)
+    const result = yield call(loadPostsAPI, action.data)
     yield put({
       type: LOAD_POSTS_SUCCESS,
-      data: generateDummyPost(10),
+      data: result.data,
     })
   } catch (error) {
     yield put({
@@ -101,6 +101,7 @@ function* addComment(action) {
       data: result.data,
     })
   } catch (error) {
+    console.log('addCommnetError', error)
     yield put({
       type: ADD_COMMENT_FAILURE,
       error: error.response.data,
@@ -112,11 +113,61 @@ function* watchAddComment() {
   yield takeLatest(ADD_COMMENT_REQUEST, addComment)
 }
 
+function likePostAPI(data) {
+  return axios.patch(`/post/${data}/like`)
+}
+
+function* likePost(action) {
+  try {
+    const result = yield call(likePostAPI, action.data)
+    yield put({
+      type: LIKE_POST_SUCCESS,
+      data: result.data,
+    })
+  } catch (error) {
+    console.log('addCommnetError', error)
+    yield put({
+      type: LIKE_POST_FAILURE,
+      error: error.response.data,
+    })
+  }
+}
+
+function* watchLikePost() {
+  yield takeLatest(LIKE_POST_REQUEST, likePost)
+}
+
+function unlikePostAPI(data) {
+  return axios.delete(`/post/${data}/unlike`)
+}
+
+function* unlikePost(action) {
+  try {
+    const result = yield call(unlikePostAPI, action.data)
+    yield put({
+      type: UNLIKE_POST_SUCCESS,
+      data: result.data,
+    })
+  } catch (error) {
+    console.log('addCommnetError', error)
+    yield put({
+      type: UNLIKE_POST_FAILURE,
+      error: error.response.data,
+    })
+  }
+}
+
+function* watchUnlikePost() {
+  yield takeLatest(UNLIKE_POST_REQUEST, unlikePost)
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchLoadPosts),
     fork(watchAddPost),
     fork(watchRemovePost),
     fork(watchAddComment),
+    fork(watchLikePost),
+    fork(watchUnlikePost),
   ])
 }
