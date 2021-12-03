@@ -7,6 +7,7 @@ import {
   SIGNUP_REQUEST, SIGNUP_SUCCESS, SIGNUP_FAILURE,
   FOLLOW_REQUEST, FOLLOW_SUCCESS, FOLLOW_FAILURE,
   UNFOLLOW_REQUEST, UNFOLLOW_SUCCESS, UNFOLLOW_FAILURE,
+  CHANGE_NICKNAME_REQUEST, CHANGE_NICKNAME_SUCCESS, CHANGE_NICKNAME_FAILURE,
 } from '../reducers/user'
 
 function loadMyInfoAPI() {
@@ -16,13 +17,13 @@ function loadMyInfoAPI() {
 function* loadMyInfo(action) {
   try {
     const result = yield call(loadMyInfoAPI, action.data)
-    console.log(`loadMyInfo result: ${result}`)
     // put은 dispatch라고 생각하자!
     yield put({
       type: LOAD_MY_INFO_SUCCESS,
       data: result.data,
     })
   } catch (error) {
+    console.log('@@@error', error)
     yield put({
       type: LOAD_MY_INFO_FAILURE,
       error: error.response.data,
@@ -110,6 +111,29 @@ function* watchSignup() {
   yield takeLatest(SIGNUP_REQUEST, signup)
 }
 
+function changeNicknameAPI(data) {
+  return axios.patch('/user/nickame', { nickname: data })
+}
+
+function* changeNickname(action) {
+  try {
+    const result = yield call(changeNicknameAPI, action.data)
+    yield put({
+      type: CHANGE_NICKNAME_SUCCESS,
+      data: result.data,
+    })
+  } catch (error) {
+    yield put({
+      type: CHANGE_NICKNAME_FAILURE,
+      error: error.response.data,
+    })
+  }
+}
+
+function* watchChangeNickname() {
+  yield takeLatest(CHANGE_NICKNAME_REQUEST, changeNickname)
+}
+
 // function followAPI() {
 //     return axios.post('api/follow')
 // }
@@ -168,5 +192,6 @@ export default function* userSaga() {
     fork(watchSignup),
     fork(watchFollow),
     fork(watchUnfollow),
+    fork(watchChangeNickname),
   ])
 }

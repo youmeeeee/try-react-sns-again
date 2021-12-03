@@ -60,18 +60,17 @@ function* watchAddPost() {
   yield takeLatest(ADD_POST_REQUEST, addPost)
 }
 
-// function remvoePostAPI(data) {
-//     return axios.delete('api/post', data)
-// }
+function remvoePostAPI(data) {
+  return axios.delete(`/post/${data}`)
+}
 
 function* removePost(action) {
   try {
-    console.log(action)
-    // const result = yield call(addPostAPI, action.data)
-    yield delay(1000)
+    const result = yield call(remvoePostAPI, action.data)
+
     yield put({
       type: REMOVE_POST_SUCCESS,
-      data: action.data,
+      data: result.data,
     })
     yield put({
       type: REMOVE_POST_OF_ME,

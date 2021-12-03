@@ -70,7 +70,7 @@ router.post('/:postId/comment', isLoggedIn, async (req, res, next) => {
     }
 })
 
-router.patch('/:postId/like', async (req, res, next) => {
+router.patch('/:postId/like', isLoggedIn, async (req, res, next) => {
     try {
         const post = await Post.findOne({
             where: {
@@ -88,7 +88,7 @@ router.patch('/:postId/like', async (req, res, next) => {
     }
 })
 
-router.delete('/:postId/unlike', async (req, res, next) => {
+router.delete('/:postId/unlike',isLoggedIn, async (req, res, next) => {
     const post = await Post.findOne({
         where: {
             id: req.params.postId
@@ -99,6 +99,21 @@ router.delete('/:postId/unlike', async (req, res, next) => {
     }
     await post.removeLikers(req.user.id)
     res.json({ postId: post.id, userId: req.user.id })
+})
+
+router.delete(':/postId',isLoggedIn,  async (req, res, next) => {
+    try { 
+        await Post.destroy({
+            where: {
+                id: req.params.postId,
+                UserId: req.user.id,
+            }
+        })
+        res.json({ postId: req.params.postId })
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
 })
 
 module.exports = router

@@ -7,7 +7,7 @@ import PostImages from './PostImages'
 import CommentForm from './CommentForm'
 import PostCardContent from './PostCardContent'
 import FollowButton from './FollowButton'
-import { UNLIKE_POST_REQUEST, LIKE_POST_REQUEST } from '../reducers/post'
+import { UNLIKE_POST_REQUEST, LIKE_POST_REQUEST, REMOVE_POST_REQUEST } from '../reducers/post'
 
 const PostCard = ({ post }) => {
   const dispatch = useDispatch()
@@ -44,7 +44,10 @@ const PostCard = ({ post }) => {
   )
   const onRemovePost = useCallback(
     () => {
-      dispatch(removePost(post.id))
+      dispatch({
+        type: REMOVE_POST_REQUEST,
+        data: post.id,
+      })
     },
     [],
   )

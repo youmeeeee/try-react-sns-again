@@ -105,4 +105,18 @@ router.post('/logout', isLoggedIn, (req, res, next) => {
     res.send('logout ok!')
 })
 
-module.exports = router
+router.patch('/nickName', isLoggedIn, async (req, res, next) => {
+    try {
+        User.update({
+            nickname: req.body.nickname,
+        }, {
+            where: {
+                id: req.user.id,
+            }
+        })
+        req.status(200).json({ nickname: req.body.nickname })
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+})

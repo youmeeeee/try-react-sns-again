@@ -72,11 +72,6 @@ export const addPost = (data) => ({
   data,
 })
 
-export const removePost = (data) => ({
-  type: REMOVE_POST_REQUEST,
-  data,
-})
-
 export const addComment = (data) => ({
   type: ADD_COMMENT_REQUEST,
   data,
@@ -120,7 +115,7 @@ const postReducer = (state = initialState, action) => produce(state, (draft) => 
     draft.removePostError = null
     break
   case REMOVE_POST_SUCCESS:
-    draft.mainPosts = draft.mainPosts.filter((v) => v.id !== action.data)
+    draft.mainPosts = draft.mainPosts.filter((v) => v.id !== action.data.PostId)
     draft.removePostLoading = false
     draft.removePostDone = true
     break

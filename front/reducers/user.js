@@ -68,27 +68,6 @@ export const logoutRequestAction = () => ({
   type: LOGOUT_REQUEST,
 })
 
-const dummyUser = (data) => ({
-  ...data,
-  nickname: 'youme',
-  id: 1,
-  Posts: [
-    { id: 1 },
-  ],
-  Followings: [
-    { nickname: 'following1' },
-    { nickname: 'following2' },
-    { nickname: 'following3' },
-  ],
-  Followers: [
-    { nickname: 'follower1' },
-    { nickname: 'follower2' },
-    { nickname: 'follower3' },
-    { nickname: 'follower4' },
-    { nickname: 'follower5' },
-  ],
-})
-
 // (이전  상태, 액션) => 다음상태
 export const userReducer = (state = initialState, action) => produce(state, (draft) => {
   switch (action.type) {
@@ -153,6 +132,7 @@ export const userReducer = (state = initialState, action) => produce(state, (dra
     draft.changeNicknameError = null
     break
   case CHANGE_NICKNAME_SUCCESS:
+    draft.me.nickname = action.data.nickname
     draft.changeNicknameLoading = false
     draft.changeNicknameDone = true
     break
