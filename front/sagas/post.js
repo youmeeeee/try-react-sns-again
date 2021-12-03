@@ -148,7 +148,6 @@ function* unlikePost(action) {
       data: result.data,
     })
   } catch (error) {
-    console.log('addCommnetError', error)
     yield put({
       type: UNLIKE_POST_FAILURE,
       error: error.response.data,

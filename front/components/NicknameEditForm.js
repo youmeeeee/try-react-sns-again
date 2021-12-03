@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useEffect, useCallback, useMemo } from 'react'
 import { Form, Input } from 'antd'
 
 import { useSelector, useDispatch } from 'react-redux'
@@ -6,9 +6,16 @@ import useInput from '../hooks/useInput'
 import { CHANGE_NICKNAME_REQUEST } from '../reducers/user'
 
 const NicknameEditForm = () => {
-  const { me } = useSelector((state) => state.user)
-  const [nickname, onChangeNickname] = useInput(me?.nickname || '')
+  const { me, changeNicknameLoading, changeNicknameDone } = useSelector((state) => state.user)
+  const [nickname, onChangeNickname, setNickname] = useInput(me?.nickname || '')
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (changeNicknameDone) {
+      setNickname('')
+      alert('nickname changed!')
+    }
+  }, [changeNicknameDone])
 
   const onSubmit = useCallback(
     () => {
@@ -19,6 +26,7 @@ const NicknameEditForm = () => {
     },
     [nickname],
   )
+
   const style = useMemo(() => ({ marginBottom: '20px', border: '1px solid #d9d9d9', padding: '20px' }), [])
   return (
     <Form style={style}>
@@ -27,7 +35,8 @@ const NicknameEditForm = () => {
         onChange={onChangeNickname}
         addonBefore="Nickname"
         enterButton="Edit"
-        onSearh={onSubmit}
+        onSearch={onSubmit}
+        loading={changeNicknameLoading}
       />
     </Form>
   )

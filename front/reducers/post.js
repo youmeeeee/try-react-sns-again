@@ -67,11 +67,6 @@ export const UNLIKE_POST_REQUEST = 'UNLIKE_POST_REQUEST'
 export const UNLIKE_POST_SUCCESS = 'UNLIKE_POST_SUCCESS'
 export const UNLIKE_POST_FAILURE = 'UNLIKE_POST_FAILURE'
 
-export const addPost = (data) => ({
-  type: ADD_POST_REQUEST,
-  data,
-})
-
 export const addComment = (data) => ({
   type: ADD_COMMENT_REQUEST,
   data,

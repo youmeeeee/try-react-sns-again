@@ -112,7 +112,7 @@ function* watchSignup() {
 }
 
 function changeNicknameAPI(data) {
-  return axios.patch('/user/nickame', { nickname: data })
+  return axios.patch('/user/nickname', { nickname: data })
 }
 
 function* changeNickname(action) {

@@ -2,7 +2,7 @@ import React, { useCallback, useRef, useEffect } from 'react'
 import { Form, Input, Button } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
 import useInput from '../hooks/useInput'
-import { addPost } from '../reducers/post'
+import { ADD_POST_REQUEST } from '../reducers/post'
 
 const PostForm = () => {
   const [text, onChangeText, setText] = useInput('')
@@ -19,7 +19,10 @@ const PostForm = () => {
 
   const onSubmit = useCallback(
     () => {
-      dispatch(addPost(text))
+      dispatch({
+        type: ADD_POST_REQUEST,
+        data: text,
+      })
     },
     [text],
   )

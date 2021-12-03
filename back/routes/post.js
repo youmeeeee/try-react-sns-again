@@ -12,7 +12,7 @@ router.post('/', isLoggedIn, async (req, res, next) => {
             UserId: req.user.id,
         })
         const fullPost = await Post.findOne({
-            wheire :{
+            where :{
                 id: post.id
             },
             include: [{
@@ -101,7 +101,7 @@ router.delete('/:postId/unlike',isLoggedIn, async (req, res, next) => {
     res.json({ postId: post.id, userId: req.user.id })
 })
 
-router.delete(':/postId',isLoggedIn,  async (req, res, next) => {
+router.delete('/:postId', isLoggedIn, async (req, res, next) => {
     try { 
         await Post.destroy({
             where: {
@@ -109,7 +109,7 @@ router.delete(':/postId',isLoggedIn,  async (req, res, next) => {
                 UserId: req.user.id,
             }
         })
-        res.json({ postId: req.params.postId })
+        res.status(200).json({ PostId: parseInt(req.params.postId, 10) })
     } catch (error) {
         console.log(error)
         next(error)
