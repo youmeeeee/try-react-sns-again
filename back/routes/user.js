@@ -121,4 +121,94 @@ router.patch('/nickname', isLoggedIn, async (req, res, next) => {
     }
 })
 
+router.patch('/:userId/follow', isLoggedIn, async (req, res, next) => {
+    try {
+        const user = await User.findOne({
+            where: {
+                id: req.params.userId
+            }
+        })
+        if (!user) {
+            res.status(403).send('The user does not exist.')
+        }
+        await user.addFollowers(req.user.id)
+        res.status(200).json({ UserId: parseInt(req.params.userId, 10) })
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+})
+
+router.delete('/:userId/unfollow', isLoggedIn, async (req, res, next) => {
+    try {
+        const user = await User.findOne({
+            where: {
+                id: req.params.userId
+            }
+        })
+        if (!user) {
+            res.status(403).send('The user does not exist.')
+        }
+        await user.removeFollowers()
+        res.status(200).json({ UserId: parseInt(req.params.userId, 10) })
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+})
+
+router.get('/followings', isLoggedIn, async (req, res, next) => {
+    try {
+        const user = await User.findOne({
+            where: {
+                id: req.user.id,
+            }
+        })
+        if (!user) {
+            res.status(403).send('The user does not exist.')
+        }
+        const following = await user.getFollowings()
+        res.status(200).json(following)
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+})
+
+router.get('/followers', isLoggedIn, async (req, res, next) => {
+    try {
+        const user = await User.findOne({
+            where: {
+                id: req.user.id,
+            }
+        })
+        if (!user) {
+            res.status(403).send('The user does not exist.')
+        }
+        const followers = await user.getFollowers()
+        res.status(200).json(followers)
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+})
+
+router.delete('/follower/:userId', isLoggedIn, async (req, res, next) => {
+    try {
+        const user = await User.findOne({
+            where: {
+                id: req.params.userId, 
+            }
+        })
+        if (!user) {
+            res.status(403).send('The user does not exist.')
+        }
+        await user.removeFollowings(req.user.id)
+        res.status(200).json({ UserId: parseInt(req.params.userId, 10)})
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+})
+
 module.exports = router

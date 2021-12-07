@@ -1,13 +1,24 @@
 import React, { useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import Head from 'next/head'
 import Router from 'next/router'
 import AppLayout from '../components/AppLayout'
 import NicknameEditForm from '../components/NicknameEditForm'
 import FollowList from '../components/FollowList'
+import { LOAD_FOLLOWINGS_REQUEST, LOAD_FOLLOWERS_REQUEST } from '../reducers/user'
 
 const Profile = () => {
   const { me } = useSelector((state) => state.user)
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch({
+      type: LOAD_FOLLOWINGS_REQUEST,
+    })
+    dispatch({
+      type: LOAD_FOLLOWERS_REQUEST,
+    })
+  }, [])
 
   useEffect(() => {
     if (!(me && me.id)) {
@@ -23,8 +34,8 @@ const Profile = () => {
       </Head>
       <AppLayout>
         <NicknameEditForm />
-        <FollowList header="Following" data={me.Following} />
-        <FollowList header="Follower" data={me.Followers} />
+        <FollowList header="Followings" data={me.Followings} />
+        <FollowList header="Followers" data={me.Followers} />
       </AppLayout>
     </>
   )
