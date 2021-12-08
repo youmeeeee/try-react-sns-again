@@ -4,6 +4,7 @@ const router = express.Router()
 const { Post, Image, Comment, User } = require('../models')
 const comment = require('../models/comment')
 const { isLoggedIn } = require('./middlewares')
+const multer = requires('multer')
 
 router.post('/', isLoggedIn, async (req, res, next) => {
     try {
@@ -110,6 +111,32 @@ router.delete('/:postId', isLoggedIn, async (req, res, next) => {
             }
         })
         res.status(200).json({ PostId: parseInt(req.params.postId, 10) })
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+})
+
+const upload = multer({
+    storage: multer.diskStorage({
+        destination(req, file, done) {
+            done(null, 'uploads')
+        },
+        filename(req, file, done) {
+            const ext = path.extname(file.originalname) // 확장자 추출 (.png)
+            const basename = path.basename(file.originalname, ext) //
+            done(null, basename + new Date().getTime() + ext)
+        },
+    }),
+    limits: {
+        fileSize: 20 * 1024 * 1024 // 20MB
+    },
+
+})
+router.post('/images', isLoggedIn, upload.array('image'), async (res, res, next) => { //upload.single, upload.none, upload.fields(파일 인풋이 두개이상있을 때)
+    try {
+        console.log("@@@req.files", req.files)
+        req.files.map(v => v.filename)
     } catch (error) {
         console.log(error)
         next(error)

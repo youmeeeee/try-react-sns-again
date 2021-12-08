@@ -33,7 +33,7 @@ app.use(cors({
 
 // ***위치 주의*** front에서 보낸 data를 req.body에 넣어주는 역할
 app.use(express.json()) // json 형식의 데이터를 req.body에 넣어줌
-app.use(express.urlencoded({ extended: true})) // form submit을 했을 때  URLencoded 방식으로 req.body에 넣어줌
+app.use(express.urlencoded({ extended: true})) // form submit을 했을 때  URLencoded 방식으로 req.body에 넣어줌 (일반폼)
 
 // login 위한 미들웨어  
 app.use(cookieParser(process.env.COOKIE_SECRET))

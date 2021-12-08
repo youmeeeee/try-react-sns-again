@@ -1,5 +1,9 @@
 const express = require('express')
 const { Post, User, Image, Comment } = require('../models')
+const { isLoggedIn } = require('./middlewares')
+const multer = require('multer')
+const path = require('path')
+const { isColString } = require('sequelize/dist/lib/utils')
 
 const router = express.Router()
 

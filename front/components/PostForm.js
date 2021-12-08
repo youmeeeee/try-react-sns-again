@@ -41,7 +41,7 @@ const PostForm = () => {
         placeholder="What's happening?!"
       />
       <div>
-        <input type="file" multiple hidden ref={imageInput} />
+        <input type="file" name="_image" multiple hidden ref={imageInput} />
         <Button onClick={onClickImageUpload}>Image Upload</Button>
         <Button type="primary" style={{ float: 'right' }} htmlType="submit" loading={addPostLoading}>Twit</Button>
       </div>
