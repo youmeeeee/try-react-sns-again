@@ -2,9 +2,16 @@ const express = require('express')
 const router = express.Router()
 
 const { Post, Image, Comment, User } = require('../models')
-const comment = require('../models/comment')
 const { isLoggedIn } = require('./middlewares')
-const multer = requires('multer')
+const multer = require('multer')
+const path = require('path')
+const fs = require('fs')
+
+try {
+    fs.accessSync('uploads')
+} catch (error) {
+   fs.mkdirSync('uploads')
+}
 
 router.post('/', isLoggedIn, async (req, res, next) => {
     try {
@@ -133,10 +140,10 @@ const upload = multer({
     },
 
 })
-router.post('/images', isLoggedIn, upload.array('image'), async (res, res, next) => { //upload.single, upload.none, upload.fields(파일 인풋이 두개이상있을 때)
+router.post('/images', isLoggedIn, upload.array('image'), async (req, res, next) => { //upload.single, upload.none, upload.fields(파일 인풋이 두개이상있을 때)
     try {
         console.log("@@@req.files", req.files)
-        req.files.map(v => v.filename)
+        res.json(req.files.map(v => v.filename))
     } catch (error) {
         console.log(error)
         next(error)
