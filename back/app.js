@@ -7,6 +7,7 @@ const passportConfig = require('./passport')
 const passport = require('passport')
 const session = require('express-session')
 const cookieParser = require('cookie-parser')
+const path = require('path')
 
 const userRouter = require('./routes/user')
 const postRouter = require('./routes/post')
@@ -31,6 +32,7 @@ app.use(cors({
     credentials: true,
 }))
 
+app.use('/', express.static(path.join(__dirname, 'uploads')))
 // ***위치 주의*** front에서 보낸 data를 req.body에 넣어주는 역할
 app.use(express.json()) // json 형식의 데이터를 req.body에 넣어줌
 app.use(express.urlencoded({ extended: true})) // form submit을 했을 때  URLencoded 방식으로 req.body에 넣어줌 (일반폼)
