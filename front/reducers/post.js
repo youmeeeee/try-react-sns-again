@@ -22,6 +22,9 @@ const initialState = {
   unlikePostLoading: false,
   unlikePostDone: false,
   unlikePostError: false,
+  uploadImagesLoading: false,
+  uploadImagesDone: false,
+  uploadImagesError: false,
 }
 
 // export const generateDummyPost = (number) => Array(number).fill().map(() => ({
@@ -67,6 +70,14 @@ export const UNLIKE_POST_REQUEST = 'UNLIKE_POST_REQUEST'
 export const UNLIKE_POST_SUCCESS = 'UNLIKE_POST_SUCCESS'
 export const UNLIKE_POST_FAILURE = 'UNLIKE_POST_FAILURE'
 
+export const UPLOAD_IMAGES_REQUEST = 'UPLOAD_IMAGES_REQUEST'
+export const UPLOAD_IMAGES_SUCCESS = 'UPLOAD_IMAGES_SUCCESS'
+export const UPLOAD_IMAGES_FAILURE = 'UPLOAD_IMAGES_FAILURE'
+
+export const REMOVE_IMAGE_REQUEST = 'REMOVE_IMAGE_REQUEST' // 동기 액션
+// export const REMOVE_IMAGE_SUCCESS = 'REMOVE_IMAGE_SUCCESS'
+// export const REMOVE_IMAGE_FAILURE = 'REMOVE_IMAGE_FAILURE'
+
 export const addComment = (data) => ({
   type: ADD_COMMENT_REQUEST,
   data,
@@ -99,6 +110,7 @@ const postReducer = (state = initialState, action) => produce(state, (draft) => 
     draft.addPostLoading = false
     draft.addPostDone = true
     draft.mainPosts.unshift(action.data)
+    draft.imagesPaths = []
     break
   case ADD_POST_FAILURE:
     draft.addPostLoading = false
@@ -149,6 +161,24 @@ const postReducer = (state = initialState, action) => produce(state, (draft) => 
   case UNLIKE_POST_FAILURE:
     draft.unlikePostLoading = false
     draft.unlikePostError = action.error
+    break
+  case UPLOAD_IMAGES_REQUEST:
+    draft.uploadImagesLoading = true
+    draft.uploadImagesDone = false
+    draft.uploadImagesError = null
+    break
+  case UPLOAD_IMAGES_SUCCESS: {
+    draft.imagesPaths = action.data
+    draft.uploadImagesLoading = false
+    draft.uploadImagesDone = true
+    break
+  }
+  case UPLOAD_IMAGES_FAILURE:
+    draft.uploadImagesLoading = false
+    draft.uploadImagesError = action.error
+    break
+  case REMOVE_IMAGE_REQUEST:
+    draft.imagesPaths = draft.imagesPaths.filter((v, i) => i !== action.data) // 이미지는 프론트에서만 지우는것으로!
     break
   default:
     break

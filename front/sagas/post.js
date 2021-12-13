@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { all, fork, takeLatest, put, delay, throttle, call } from 'redux-saga/effects'
+import { all, fork, takeLatest, put, throttle, call } from 'redux-saga/effects'
 import {
   LOAD_POSTS_REQUEST, LOAD_POSTS_SUCCESS, LOAD_POSTS_FAILURE,
   ADD_POST_REQUEST, ADD_POST_SUCCESS, ADD_POST_FAILURE,
@@ -7,6 +7,7 @@ import {
   ADD_COMMENT_REQUEST, ADD_COMMENT_SUCCESS, ADD_COMMENT_FAILURE,
   LIKE_POST_REQUEST, LIKE_POST_SUCCESS, LIKE_POST_FAILURE,
   UNLIKE_POST_REQUEST, UNLIKE_POST_SUCCESS, UNLIKE_POST_FAILURE,
+  UPLOAD_IMAGES_REQUEST, UPLOAD_IMAGES_SUCCESS, UPLOAD_IMAGES_FAILURE,
 } from '../reducers/post'
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user'
 
@@ -34,7 +35,7 @@ function* watchLoadPosts() {
 }
 
 function addPostAPI(data) {
-  return axios.post('/post', { content: data })
+  return axios.post('/post', data)
 }
 
 function* addPost(action) {
@@ -159,6 +160,52 @@ function* watchUnlikePost() {
   yield takeLatest(UNLIKE_POST_REQUEST, unlikePost)
 }
 
+function uploadImagesAPI(data) {
+  return axios.post('/post/images', data) // formData는 JSON 으로 감싸면 안됨
+}
+
+function* uploadImages(action) {
+  try {
+    const result = yield call(uploadImagesAPI, action.data)
+    yield put({
+      type: UPLOAD_IMAGES_SUCCESS,
+      data: result.data,
+    })
+  } catch (error) {
+    yield put({
+      type: UPLOAD_IMAGES_FAILURE,
+      error: error.response.data,
+    })
+  }
+}
+
+function* watchUploadImages() {
+  yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages)
+}
+
+// function removeImageAPI(data) {
+//   return axios.delete('/post/image', data)
+// }
+
+// function* removeImage(action) {
+//   try {
+//     const result = yield call(removeImageAPI, action.data)
+//     yield put({
+//       type: REMOVE_IMAGE_SUCCESS,
+//       data: result.data,
+//     })
+//   } catch (error) {
+//     yield put({
+//       type: REMOVE_IMAGE_FAILURE,
+//       error: error.response.data,
+//     })
+//   }
+// }
+
+// function* watchRemoveImage() {
+//   yield takeLatest(REMOVE_IMAGE_REQUEST, removeImage)
+// }
+
 export default function* postSaga() {
   yield all([
     fork(watchLoadPosts),
@@ -167,5 +214,7 @@ export default function* postSaga() {
     fork(watchAddComment),
     fork(watchLikePost),
     fork(watchUnlikePost),
+    fork(watchUploadImages),
+    // fork(watchRemoveImage),
   ])
 }
