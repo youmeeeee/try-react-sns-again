@@ -25,6 +25,9 @@ const initialState = {
   uploadImagesLoading: false,
   uploadImagesDone: false,
   uploadImagesError: false,
+  retweetLoading: false,
+  retweetDone: false,
+  retweetError: false,
 }
 
 // export const generateDummyPost = (number) => Array(number).fill().map(() => ({
@@ -73,6 +76,10 @@ export const UNLIKE_POST_FAILURE = 'UNLIKE_POST_FAILURE'
 export const UPLOAD_IMAGES_REQUEST = 'UPLOAD_IMAGES_REQUEST'
 export const UPLOAD_IMAGES_SUCCESS = 'UPLOAD_IMAGES_SUCCESS'
 export const UPLOAD_IMAGES_FAILURE = 'UPLOAD_IMAGES_FAILURE'
+
+export const RETWEET_REQUEST = 'RETWEET_REQUEST'
+export const RETWEET_SUCCESS = 'RETWEET_SUCCESS'
+export const RETWEET_FAILURE = 'RETWEET_FAILURE'
 
 export const REMOVE_IMAGE_REQUEST = 'REMOVE_IMAGE_REQUEST' // 동기 액션
 // export const REMOVE_IMAGE_SUCCESS = 'REMOVE_IMAGE_SUCCESS'
@@ -176,6 +183,21 @@ const postReducer = (state = initialState, action) => produce(state, (draft) => 
   case UPLOAD_IMAGES_FAILURE:
     draft.uploadImagesLoading = false
     draft.uploadImagesError = action.error
+    break
+  case RETWEET_REQUEST:
+    draft.retweetLoading = true
+    draft.retweetDone = false
+    draft.retweetError = null
+    break
+  case RETWEET_SUCCESS: {
+    draft.mainPosts.unshift(action.data)
+    draft.retweetLoading = false
+    draft.retweetDone = true
+    break
+  }
+  case RETWEET_FAILURE:
+    draft.retweetLoading = false
+    draft.retweetError = action.error
     break
   case REMOVE_IMAGE_REQUEST:
     draft.imagesPaths = draft.imagesPaths.filter((v, i) => i !== action.data) // 이미지는 프론트에서만 지우는것으로!

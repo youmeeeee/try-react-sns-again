@@ -41,8 +41,8 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
             const result = await Promise.all(hashtags.map((tag) => Hashtag.findOrCreate({ 
                 where: { name: tag.slice(1).toLowerCase() }
             }))) // result ex) [[today, true], [react, false]]
+            await post.addHashtags(result.map((v) => v[0]))
         }
-        await post.addHashtags(result.map((v) => v[0]))
         if (req.body.image) {
             if (Array.isArray(req.body.image)) { // 이미지를 여러개 올리면 image: [image1.png, image2.png]
                 const images = await Promise.all(req.body.image.map((image) => Image.create({ src: image })))
@@ -166,5 +166,78 @@ router.post('/images', isLoggedIn, upload.array('image'), async (req, res, next)
         next(error)
     }
 })
+
+
+router.post('/:postId/retweet', isLoggedIn, async (req, res, next) => {
+    try {
+        const post = await Post.findOne({
+            where: {
+                id: req.params.postId
+            },
+            include: [{
+                model: Post,
+                as: 'Retweet'
+            }], 
+        })
+        if (!post) {
+            return res.status(403).send('This post does not exist.')
+        }
+        console.log("req.user.id", req.user.id)
+        console.log("req.user.id", req.user.id)
+        if (req.user.id === post.UserId || (post.Retweet && post.Retweet.UserId === req.user.id)) {
+             return res.status(403).send('You cannot retweet your own posts.')
+        }
+        const retweetTargetId = post.RetweetId || post.id
+        const exPost = await Post.findOne({
+            where: {
+                UserId: req.user.id,
+                RetweetId: retweetTargetId
+            }
+        }) 
+        if (exPost) {
+            return res.status(403).send('Already Retweet!')
+        }
+        const retweet = await Post.create({
+            UserId: req.user.id,
+            RetweetId: retweetTargetId,
+            content: 'retweet'
+        })
+        const retweetIwthPrevPost = await Post.findOne({
+            where: {
+                id: retweet.id
+            },
+            include: [{
+                model: Post,
+                as: 'Retweet',
+                include: [{
+                    model: User,
+                    attributes: ['id', 'nickname']
+                }, {
+                    model: Image,
+                }]
+            }, {
+                model: User,
+                attributes: ['id', 'nickname'],
+            }, {
+                model: Image,
+            }, {
+                model: Comment,
+                include: [{
+                    model: User,
+                    attributes: ['id', 'nickname']
+                }]
+            }, {
+                model: User,
+                as: 'Likers',
+                attributes: ['id']
+            }]
+        })
+        res.status(201).json(retweetIwthPrevPost)
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+})
+
  
 module.exports = router
