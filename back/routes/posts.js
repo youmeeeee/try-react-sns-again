@@ -1,18 +1,17 @@
 const express = require('express')
+const { Op } = require('sequelize')
 const { Post, User, Image, Comment } = require('../models')
-const { isLoggedIn } = require('./middlewares')
-const multer = require('multer')
-const path = require('path')
-const { isColString } = require('sequelize/dist/lib/utils')
 
 const router = express.Router()
 
 router.get('/', async (req, res, next) => {
     try {
+        const where = {}
+        if (parseInt(req.query.lastId, 10)) {
+            where.id = { [Op.lt]: parseInt(req.query.lastId, 10) }
+        }
         const posts = await Post.findAll({
-            // where: {  
-            //     id: lastId
-            // },
+            where,
             limit: 10,
             order: [
                 ['createdAt', 'DESC'],
