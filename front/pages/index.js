@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { END } from 'redux-saga'
 import AppLayout from '../components/AppLayout'
 import PostForm from '../components/PostForm'
 import PostCard from '../components/PostCard'
 import { LOAD_POSTS_REQUEST } from '../reducers/post'
 import { LOAD_MY_INFO_REQUEST } from '../reducers/user'
+import wrapper from '../store/configureStore'
 
 const Home = () => {
   const { me } = useSelector((state) => state.user)
@@ -22,14 +24,6 @@ const Home = () => {
   }, [retweetError])
 
   const dispatch = useDispatch()
-  useEffect(() => {
-    dispatch({
-      type: LOAD_MY_INFO_REQUEST,
-    })
-    dispatch({
-      type: LOAD_POSTS_REQUEST,
-    })
-  }, [])
 
   useEffect(() => {
     function onScroll() {
@@ -56,5 +50,20 @@ const Home = () => {
     </AppLayout>
   )
 }
+
+// 화면을 그리기전에 server에서 실행
+// Home 보다 먼저 실행
+// redux에 데이터가 채워진 상태로 처음부터  존재하게 됨
+export const getSeverSideProps = wrapper.getServerSideProps(async (context) => {
+  console.log('@@@context', context)
+  context.store.dispatch({
+    type: LOAD_MY_INFO_REQUEST,
+  })
+  context.store.dispatch({
+    type: LOAD_POSTS_REQUEST,
+  })
+  context.store.dispatch(END)
+  await context.store.sagaTask.toPromise()
+})
 
 export default Home
