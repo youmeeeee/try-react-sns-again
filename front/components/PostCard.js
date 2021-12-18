@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback } from 'react'
 import { Card, Popover, Button, Avatar, List, Comment } from 'antd'
 import { EllipsisOutlined, HeartOutlined, MessageOutlined, RetweetOutlined, HeartTwoTone } from '@ant-design/icons'
 import { useSelector, useDispatch } from 'react-redux'
@@ -12,7 +12,7 @@ import { UNLIKE_POST_REQUEST, LIKE_POST_REQUEST, REMOVE_POST_REQUEST, RETWEET_RE
 const PostCard = ({ post }) => {
   const dispatch = useDispatch()
   const { me } = useSelector((state) => state.user)
-  const { removePostLoading, retweetError } = useSelector((state) => state.post)
+  const { removePostLoading } = useSelector((state) => state.post)
   const id = me?.id // optional chainning === (me && me.id)
   const liked = post.Likers.find((v) => v.id === id)
 

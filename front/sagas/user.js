@@ -110,7 +110,6 @@ function* signup(action) {
 }
 
 function* watchSignup() {
-  console.log('watch sign up')
   yield takeLatest(SIGNUP_REQUEST, signup)
 }
 

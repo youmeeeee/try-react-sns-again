@@ -54,16 +54,15 @@ const Home = () => {
 // 화면을 그리기전에 server에서 실행
 // Home 보다 먼저 실행
 // redux에 데이터가 채워진 상태로 처음부터  존재하게 됨
-export const getSeverSideProps = wrapper.getServerSideProps(async (context) => {
-  console.log('@@@context', context)
-  context.store.dispatch({
+export const getServerSideProps = wrapper.getServerSideProps((store) => async () => {
+  store.dispatch({
     type: LOAD_MY_INFO_REQUEST,
   })
-  context.store.dispatch({
+  store.dispatch({
     type: LOAD_POSTS_REQUEST,
   })
-  context.store.dispatch(END)
-  await context.store.sagaTask.toPromise()
+  store.dispatch(END)
+  await store.sagaTask.toPromise()
 })
 
 export default Home
