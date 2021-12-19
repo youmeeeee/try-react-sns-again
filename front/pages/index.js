@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { END } from 'redux-saga'
+import axios from 'axios'
 import AppLayout from '../components/AppLayout'
 import PostForm from '../components/PostForm'
 import PostCard from '../components/PostCard'
@@ -54,7 +55,12 @@ const Home = () => {
 // 화면을 그리기전에 server에서 실행
 // Home 보다 먼저 실행
 // redux에 데이터가 채워진 상태로 처음부터  존재하게 됨
-export const getServerSideProps = wrapper.getServerSideProps((store) => async () => {
+export const getServerSideProps = wrapper.getServerSideProps((store) => async ({ req }) => {
+  const cookie = req ? req.headers.cookie : ''
+  axios.defaults.headers.Cookie = ''
+  if (req && cookie) {
+    axios.defaults.headers.Cookie = cookie
+  }
   store.dispatch({
     type: LOAD_MY_INFO_REQUEST,
   })
