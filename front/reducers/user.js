@@ -5,6 +5,9 @@ const initialState = {
   loadMyInfoLoading: false,
   loadMyInfoDone: false,
   loadMyInfoError: null,
+  loadUserInfoLoading: false,
+  loadUserInfoDone: false,
+  loadUserInfoError: null,
   loginLoading: false,
   loginDone: false,
   loginError: null,
@@ -33,6 +36,7 @@ const initialState = {
   loadFollowersDone: false,
   loadFollowersError: null,
   me: null,
+  userInfo: null,
   signupData: {},
   loginData: {},
 }
@@ -40,6 +44,10 @@ const initialState = {
 export const LOAD_MY_INFO_REQUEST = 'LOAD_MY_INFO_REQUEST'
 export const LOAD_MY_INFO_SUCCESS = 'LOAD_MY_INFO_SUCCESS'
 export const LOAD_MY_INFO_FAILURE = 'LOAD_MY_INFO_FAILURE'
+
+export const LOAD_USER_REQUEST = 'LOAD_USER_REQUEST'
+export const LOAD_USER_SUCCESS = 'LOAD_USER_SUCCESS'
+export const LOAD_USER_FAILURE = 'LOAD_USER_FAILURE'
 
 export const LOGIN_REQUEST = 'LOGIN_REQUEST'
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS'
@@ -105,6 +113,20 @@ export const userReducer = (state = initialState, action) => produce(state, (dra
   case LOAD_MY_INFO_FAILURE:
     draft.loadMyInfoLoading = false
     draft.loadMyInfoError = action.error
+    break
+  case LOAD_USER_REQUEST:
+    draft.loadUserLoading = true
+    draft.loadUserDone = false
+    draft.loadUserError = null
+    break
+  case LOAD_USER_SUCCESS:
+    draft.loadUserLoading = false
+    draft.loadUserDone = true
+    draft.userInfo = action.data
+    break
+  case LOAD_USER_FAILURE:
+    draft.loadUserLoading = false
+    draft.loadUserError = action.error
     break
   case LOGIN_REQUEST:
     draft.loginLoading = true

@@ -2,6 +2,7 @@ import axios from 'axios'
 import { all, fork, takeLatest, put, call } from 'redux-saga/effects'
 import {
   LOAD_MY_INFO_REQUEST, LOAD_MY_INFO_SUCCESS, LOAD_MY_INFO_FAILURE,
+  LOAD_USER_REQUEST, LOAD_USER_SUCCESS, LOAD_USER_FAILURE,
   LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE,
   LOGOUT_REQUEST, LOGOUT_SUCCESS, LOGOUT_FAILURE,
   SIGNUP_REQUEST, SIGNUP_SUCCESS, SIGNUP_FAILURE,
@@ -12,6 +13,31 @@ import {
   LOAD_FOLLOWINGS_REQUEST, LOAD_FOLLOWINGS_SUCCESS, LOAD_FOLLOWINGS_FAILURE,
   LOAD_FOLLOWERS_REQUEST, LOAD_FOLLOWERS_SUCCESS, LOAD_FOLLOWERS_FAILURE,
 } from '../reducers/user'
+
+function loadUserAPI(data) {
+  return axios.get(`/user/${data}`)
+}
+
+function* loadUser(action) {
+  try {
+    const result = yield call(loadUserAPI, action.data)
+    // put은 dispatch라고 생각하자!
+    yield put({
+      type: LOAD_USER_SUCCESS,
+      data: result.data,
+    })
+  } catch (error) {
+    console.log('@@@error', error)
+    yield put({
+      type: LOAD_USER_FAILURE,
+      error: error.response.data,
+    })
+  }
+}
+
+function* watchLoadUser() {
+  yield takeLatest(LOAD_USER_REQUEST, loadUser)
+}
 
 function loadMyInfoAPI() {
   return axios.get('/user')
@@ -259,6 +285,7 @@ function* watchLoadFollowers() {
 export default function* userSaga() {
   yield all([
     fork(watchLoadMyInfo),
+    fork(watchLoadUser),
     fork(watchLogin),
     fork(watchLogout),
     fork(watchSignup),
