@@ -2,8 +2,12 @@ import produce from 'immer'
 
 const initialState = {
   mainPosts: [],
+  singlePost: null,
   imagesPaths: [],
   hasMorePost: true,
+  loadPostLoading: false,
+  loadPostDone: false,
+  loadPostError: false,
   loadPostsLoading: false,
   loadPostsDone: false,
   loadPostsError: false,
@@ -49,6 +53,10 @@ const initialState = {
 //   }],
 // }))
 
+export const LOAD_POST_REQUEST = 'LOAD_POST_REQUEST'
+export const LOAD_POST_SUCCESS = 'LOAD_POST_SUCCESS'
+export const LOAD_POST_FAILURE = 'LOAD_POST_FAILURE'
+
 export const LOAD_POSTS_REQUEST = 'LOAD_POSTS_REQUEST'
 export const LOAD_POSTS_SUCCESS = 'LOAD_POSTS_SUCCESS'
 export const LOAD_POSTS_FAILURE = 'LOAD_POSTS_FAILURE'
@@ -93,6 +101,20 @@ export const addComment = (data) => ({
 // 이전  상태를 액션을 통해 다음상태로 만들어 내는 함수 (불변성을 지키면서)
 const postReducer = (state = initialState, action) => produce(state, (draft) => {
   switch (action.type) {
+  case LOAD_POST_REQUEST:
+    draft.loadPostLoading = true
+    draft.loadPostDone = false
+    draft.loadPostError = null
+    break
+  case LOAD_POST_SUCCESS:
+    draft.loadPostLoading = false
+    draft.loadPostDone = true
+    draft.singlePost = action.data
+    break
+  case LOAD_POST_FAILURE:
+    draft.loadPostLoading = false
+    draft.loadPostError = action.error
+    break
   case LOAD_POSTS_REQUEST:
     draft.loadPostsLoading = true
     draft.loadPostsDone = false

@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { all, fork, takeLatest, put, throttle, call } from 'redux-saga/effects'
 import {
+  LOAD_POST_REQUEST, LOAD_POST_SUCCESS, LOAD_POST_FAILURE,
   LOAD_POSTS_REQUEST, LOAD_POSTS_SUCCESS, LOAD_POSTS_FAILURE,
   ADD_POST_REQUEST, ADD_POST_SUCCESS, ADD_POST_FAILURE,
   REMOVE_POST_REQUEST, REMOVE_POST_SUCCESS, REMOVE_POST_FAILURE,
@@ -11,6 +12,29 @@ import {
   RETWEET_REQUEST, RETWEET_SUCCESS, RETWEET_FAILURE,
 } from '../reducers/post'
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user'
+
+function loadPostAPI(postId) {
+  return axios.get(`post/${postId}`)
+}
+
+function* loadPost(action) {
+  try {
+    const result = yield call(loadPostAPI, action.data)
+    yield put({
+      type: LOAD_POST_SUCCESS,
+      data: result.data,
+    })
+  } catch (error) {
+    yield put({
+      type: LOAD_POST_FAILURE,
+      error: error.response.data,
+    })
+  }
+}
+
+function* watchLoadPost() {
+  yield takeLatest(LOAD_POST_REQUEST, loadPost)
+}
 
 function loadPostsAPI(lastId) {
   return axios.get(`/posts?lastId=${lastId || 0}`)
@@ -209,6 +233,7 @@ function* watchRetweetPost() {
 
 export default function* postSaga() {
   yield all([
+    fork(watchLoadPost),
     fork(watchLoadPosts),
     fork(watchAddPost),
     fork(watchRemovePost),

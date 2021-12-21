@@ -30,6 +30,53 @@ const upload = multer({
  
 })
 
+router.get('/:postId', async (req, res, next) => {
+    try {
+        const post = await Post.findOne({
+            where: {
+                id: req.params.postId
+            }
+        })
+        if (!post) {
+            return res.status(404).send('This post does not exist.')
+        }
+        const fullPost = await Post.findOne({
+            where :{
+                id: post.id
+            },
+            include: [{
+                model: Post,
+                as: 'Retweet',
+                include: [{
+                    model: User,
+                    attributes: ['id', 'nickname']
+                }, {
+                    model: Image,
+                }]
+            }, {
+                model: User,
+                attributes: ['id', 'nickname'],
+            }, {
+                model: Image,
+            }, {
+                model: Comment,
+                include: [{
+                    model: User,
+                    attributes: ['id', 'nickname'] 
+                }]
+            }, {
+                model: User,
+                as: 'Likers',
+                attributes: ['id']
+            }]
+        })
+        res.status(200).json(fullPost)
+    } catch (error) {
+        console.log('error', error)
+        next(error)
+    }
+})
+
 router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
     try {
         const post = await Post.create({
