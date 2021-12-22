@@ -1,0 +1,14 @@
+{
+    "preset": [
+        "next/babel"
+    ],
+    "plugins": [
+        [
+            "babel-plugin-styled-component",
+            {
+                "ssr": true,
+                "displayName": true
+            }
+        ]
+    ]
+}
