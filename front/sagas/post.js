@@ -3,6 +3,8 @@ import { all, fork, takeLatest, put, throttle, call } from 'redux-saga/effects'
 import {
   LOAD_POST_REQUEST, LOAD_POST_SUCCESS, LOAD_POST_FAILURE,
   LOAD_POSTS_REQUEST, LOAD_POSTS_SUCCESS, LOAD_POSTS_FAILURE,
+  LOAD_USER_POSTS_REQUEST, LOAD_USER_POSTS_SUCCESS, LOAD_USER_POSTS_FAILURE,
+  LOAD_HASHTAG_POSTS_REQUEST, LOAD_HASHTAG_POSTS_SUCCESS, LOAD_HASHTAG_POSTS_FAILURE,
   ADD_POST_REQUEST, ADD_POST_SUCCESS, ADD_POST_FAILURE,
   REMOVE_POST_REQUEST, REMOVE_POST_SUCCESS, REMOVE_POST_FAILURE,
   ADD_COMMENT_REQUEST, ADD_COMMENT_SUCCESS, ADD_COMMENT_FAILURE,
@@ -34,6 +36,52 @@ function* loadPost(action) {
 
 function* watchLoadPost() {
   yield takeLatest(LOAD_POST_REQUEST, loadPost)
+}
+
+function loadHashtagPostsAPI(data, lastId) {
+  return axios.get(`/hashtag/${data}?lastId=${lastId || 0}`)
+}
+
+function* loadHashtagPosts(action) {
+  try {
+    const result = yield call(loadHashtagPostsAPI, action.data, action.lastId)
+    yield put({
+      type: LOAD_HASHTAG_POSTS_SUCCESS,
+      data: result.data,
+    })
+  } catch (error) {
+    yield put({
+      type: LOAD_HASHTAG_POSTS_FAILURE,
+      error: error.response.data,
+    })
+  }
+}
+
+function* watchLoadHashtagPosts() {
+  yield throttle(5000, LOAD_HASHTAG_POSTS_REQUEST, loadHashtagPosts)
+}
+
+function loadUserPostsAPI(data, lastId) {
+  return axios.get(`/user/${data}/posts?lastId=${lastId || 0}`)
+}
+
+function* loadUserPosts(action) {
+  try {
+    const result = yield call(loadUserPostsAPI, action.data, action.lastId)
+    yield put({
+      type: LOAD_USER_POSTS_SUCCESS,
+      data: result.data,
+    })
+  } catch (error) {
+    yield put({
+      type: LOAD_USER_POSTS_FAILURE,
+      error: error.response.data,
+    })
+  }
+}
+
+function* watchLoadUserPosts() {
+  yield throttle(5000, LOAD_USER_POSTS_REQUEST, loadUserPosts)
 }
 
 function loadPostsAPI(lastId) {
@@ -235,6 +283,8 @@ export default function* postSaga() {
   yield all([
     fork(watchLoadPost),
     fork(watchLoadPosts),
+    fork(watchLoadUserPosts),
+    fork(watchLoadHashtagPosts),
     fork(watchAddPost),
     fork(watchRemovePost),
     fork(watchAddComment),
