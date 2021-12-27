@@ -19,7 +19,7 @@ router.get('/:hashtag', async (req, res, next) => { //GET /hashtag/react
             include: [{
                 model: Hashtag,
                 where: {
-                    name: req.params.hashtag
+                    name: decodeURIComponent(req.params.hashtag)
                 }
             },
             {

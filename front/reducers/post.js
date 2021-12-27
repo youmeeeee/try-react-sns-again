@@ -135,7 +135,9 @@ const postReducer = (state = initialState, action) => produce(state, (draft) => 
   case LOAD_POSTS_SUCCESS:
     draft.loadPostsLoading = false
     draft.loadPostsDone = true
+    console.log('@@@action.data', action.data)
     draft.mainPosts = draft.mainPosts.concat(action.data)
+    console.log('@@Draft.mainPosts', draft.mainPosts)
     draft.hasMorePost = action.data.length === 10
     break
   case LOAD_USER_POSTS_FAILURE:

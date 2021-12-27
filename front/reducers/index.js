@@ -10,7 +10,7 @@ const rootReducer = (state, action) => {
   // redux SSR을 위해서 HYDRATE가 필요
   // getSeverSideProps에서 실행한 결과를 HYDRATE로 보내준다.
   case HYDRATE:
-    console.log('HYDRATE', action)
+    // console.log('HYDRATE', action)
     return action.payload
   default: {
     const combinedReducer = combineReducers({
