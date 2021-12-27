@@ -250,10 +250,10 @@ router.delete('/follower/:userId', isLoggedIn, async (req, res, next) => {
     }
 })
 
-router.get('/:userId/posts', async (req, res, next) => { // GET /user/1/posts
+router.get('/:userId/posts', async (req, res, next) => {
     try {
         const where = {
-            userId: req.params.userId
+            UserId: req.params.userId
         }
         if (parseInt(req.query.lastId, 10)) {
             where.id = { [Op.lt]: parseInt(req.query.lastId, 10) }
@@ -297,5 +297,6 @@ router.get('/:userId/posts', async (req, res, next) => { // GET /user/1/posts
         next(error)
     }
 })
+
 
 module.exports = router

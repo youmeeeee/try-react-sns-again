@@ -1,6 +1,7 @@
 const express = require('express')
 const { Post, Hashtag, Image, Comment, User } = require('../models')
 const router = express.Router()
+const { Op } = require('sequelize')
 
 router.get('/:hashtag', async (req, res, next) => { //GET /hashtag/react
     try {
