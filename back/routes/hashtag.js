@@ -3,7 +3,7 @@ const { Post, Hashtag, Image, Comment, User } = require('../models')
 const router = express.Router()
 const { Op } = require('sequelize')
 
-router.get('/:hashtag', async (req, res, next) => { //GET /hashtag/react
+router.get('/:tag', async (req, res, next) => { //GET /hashtag/react
     try {
         const where = {}
         if (parseInt(req.query.lastId, 10)) {
@@ -19,7 +19,7 @@ router.get('/:hashtag', async (req, res, next) => { //GET /hashtag/react
             include: [{
                 model: Hashtag,
                 where: {
-                    name: decodeURIComponent(req.params.hashtag)
+                    name: decodeURIComponent(req.params.tag)
                 }
             },
             {
@@ -48,6 +48,7 @@ router.get('/:hashtag', async (req, res, next) => { //GET /hashtag/react
                 }]
             }]
         })
+        console.log('@@@@posts', posts)
         res.status(200).json(posts)
     } catch (error) {
         console.log(error)

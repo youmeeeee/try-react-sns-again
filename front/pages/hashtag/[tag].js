@@ -53,7 +53,6 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async ({
   store.dispatch({
     type: LOAD_MY_INFO_REQUEST,
   })
-  console.log('@@@@@@params.tag', params.tag)
   store.dispatch({
     type: LOAD_HASHTAG_POSTS_REQUEST,
     data: params.tag,

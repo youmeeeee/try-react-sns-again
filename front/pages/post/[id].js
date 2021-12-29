@@ -12,6 +12,11 @@ import PostCard from '../../components/PostCard'
 
 const Post = () => {
   const router = useRouter()
+
+  if (router.isFallback) {
+    return <div>Loading...</div>
+  }
+
   const { id } = router.query
   const { singlePost } = useSelector((state) => state.post)
   return (
@@ -31,7 +36,21 @@ const Post = () => {
   )
 }
 
-export const getServerSideProps = wrapper.getServerSideProps((store) => async ({ req, params }) => {
+// html로 미리 만들어둘만한 것만 제한을 할 떄 사용하면 좋다.
+// 쓰기 까다롭고 제한적이다.
+export async function getStaticPaths() {
+  // const result = await axios.get('/post/list')
+  return {
+    paths: [
+      { params: { id: '1' } },
+      { params: { id: '2' } },
+      { params: { id: '3' } },
+    ],
+    fallback: true, // false => params에 작성하지 않은 것들은 에러, true => params에 작성하지 않은 것은 CSR
+  }
+}
+
+export const getStaticPath = wrapper.getStaticPath((store) => async ({ req, params }) => {
   const cookie = req ? req.headers.cookie : ''
   axios.defaults.headers.Cookie = ''
   if (req && cookie) {
