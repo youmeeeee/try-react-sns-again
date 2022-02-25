@@ -5,12 +5,13 @@
   "main": "index.js",
   "scripts": {
     "dev": "next -p 3060",
-    "build": "next build"
+    "build": "cross-env ANALYZE=true NODE_ENV=production next build"
   },
   "author": "Youmekko",
   "license": "ISC",
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
+    "@next/bundle-analyzer": "^12.1.0",
     "antd": "^4.16.13",
     "axios": "^0.24.0",
     "babel-plugin-styled-components": "^2.0.2",
