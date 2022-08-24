@@ -12,7 +12,7 @@ module.exports = withBundleAnalyzer({
     ]
     return {
       ...config,
-      mode: prod ? 'production' : 'devlopment',
+      mode: prod ? 'production' : 'development',
       devtool: prod ? 'hidden-source-map' : 'eval',
       plugins,
     }
