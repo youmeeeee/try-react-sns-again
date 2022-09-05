@@ -2,7 +2,7 @@ const passport = require('passport')
 const { Strategy: LocalStrategy } = require('passport-local')
 const bcrypt = require('bcrypt')
 const { User } = require('../models')
-const { noExtendLeft } = require('sequelize/dist/lib/operators')
+// const { noExtendLeft } = require('sequelize/dist/lib/operators')
 
 module.exports = () => {
     passport.use(new LocalStrategy({
